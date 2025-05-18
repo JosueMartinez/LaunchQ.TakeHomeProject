@@ -1,0 +1,31 @@
+﻿@page "/books"
+@inject IOpenLibraryServices LibraryService
+
+<h3>Books by Stephen King</h3>
+
+@if (books == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <h3>Titles</h3>
+    <ul>
+        @foreach (var book in books)
+        {
+            <li>
+                <a href="@($"/Books/{book.Key.Split('/').Last()}")">@book.Title</a>
+            </li>
+        }
+    </ul>
+
+}
+
+@code {
+    private List<Book> books;
+
+    protected override async Task OnInitializedAsync()
+    {
+        books = await LibraryService.GetBooksByAuthorAsync("OL19981A");
+    }
+}

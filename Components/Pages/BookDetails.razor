@@ -1,0 +1,39 @@
+﻿@page "/books/{workId}"
+@inject IOpenLibraryServices LibraryService
+
+<h3>Book Details</h3>
+
+@if (book == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div>
+        <h4>@book.Title</h4>
+
+        <strong>Subjects:</strong>
+        <ul>
+            @foreach (var s in subjects)
+            {
+                <li>@s</li>
+            }
+        </ul>
+        
+            
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string workId { get; set; }
+
+    private Models.BookDetails book;
+    private List<string> subjects;
+
+    protected override async Task OnInitializedAsync()
+    {
+        book = await LibraryService.GetBookDetailsAsync(workId);
+        subjects = book.Subjects ?? new List<string>();
+    }
+}
