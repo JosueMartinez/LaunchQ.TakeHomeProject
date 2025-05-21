@@ -1,5 +1,7 @@
 ﻿@page "/books/{workId}"
 @inject IOpenLibraryServices LibraryService
+@inject IFavoritesService FavoritesService
+@rendermode InteractiveServer
 
 <h3>Book Details</h3>
 
@@ -19,8 +21,15 @@ else
                 <li>@s</li>
             }
         </ul>
-        
-            
+        @if (!IsFavorite)
+        {
+            <button @onclick="AddToFavorites" class="btn btn-success">Add To Favorites</button>
+        }
+        else
+        {
+            <button @onclick="AddToFavorites" class="btn btn-danger">Remove From Favorites</button>
+        }
+
     </div>
 }
 
@@ -30,10 +39,27 @@ else
 
     private Models.BookDetails book;
     private List<string> subjects;
+    private bool IsFavorite { get; set; }
+
 
     protected override async Task OnInitializedAsync()
     {
         book = await LibraryService.GetBookDetailsAsync(workId);
         subjects = book.Subjects ?? new List<string>();
+        IsFavorite = FavoritesService.GetFavorites().Any(x => x.Title == book.Title);
+    }
+
+    public void AddToFavorites(MouseEventArgs e)
+    {
+        if (!IsFavorite)
+        {
+            FavoritesService.AddToFavorites(new Book { Title = book.Title });
+            IsFavorite = true;
+        }
+        else
+        {
+            FavoritesService.RemoveFromFavorites(new Book { Title = book.Title });
+            IsFavorite = false;
+        }
     }
 }

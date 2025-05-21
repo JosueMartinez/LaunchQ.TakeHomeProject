@@ -10,6 +10,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddHttpClient<IOpenLibraryServices, OpenLibraryService>();
+builder.Services.AddScoped<IFavoritesService, FavoritesService>();
 
 builder.Services.Configure<OpenLibrarySettings>(
     builder.Configuration.GetSection("OpenLibrary"));

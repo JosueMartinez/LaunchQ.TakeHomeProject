@@ -1,0 +1,30 @@
+﻿@page "/favorites"
+@inject IFavoritesService FavoritesService
+
+<h3>Favorites</h3>
+
+@if (Favs.Any())
+{
+
+    <ul>
+        @foreach (var fav in Favs)
+        {
+            <li>@fav.Title</li>
+        }
+
+    </ul>
+}
+else
+{
+    <p>You have no favorite books.</p>
+}
+
+
+@code {
+    private List<Models.Book> Favs;
+    protected override async Task OnInitializedAsync()
+    {
+        Favs = FavoritesService.GetFavorites();
+    }
+
+}
